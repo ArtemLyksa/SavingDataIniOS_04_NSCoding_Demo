@@ -13,17 +13,17 @@ class ViewController: UIViewController {
   override func viewDidLoad() {
     super.viewDidLoad()
 
-    var library = Library()
+    let library = Library()
     let fileManager = NSFileManager.defaultManager()
     
     if let dataUrl = NSBundle.mainBundle().URLForResource("LibraryData", withExtension: "plist") {
       if let plistData = NSData(contentsOfURL: dataUrl) {
         var format = NSPropertyListFormat.XMLFormat_v1_0
         do {
-          var plist = try NSPropertyListSerialization.propertyListWithData(plistData, options: .Immutable, format: &format)
+          let plist = try NSPropertyListSerialization.propertyListWithData(plistData, options: .Immutable, format: &format)
           
-          var books = plist["Books"]! as! [AnyObject]
-          var authors = plist["Authors"]! as! [AnyObject]
+          let books = plist["Books"]! as! [AnyObject]
+          let authors = plist["Authors"]! as! [AnyObject]
           
           for authorData in authors {
             let firstName = authorData["First Name"]!! as! String
@@ -52,16 +52,17 @@ class ViewController: UIViewController {
       }
     }
     
+    print(library)
+    
     do {
       let documentDirectory = try fileManager.URLForDirectory(.DocumentDirectory, inDomain: .UserDomainMask, appropriateForURL: nil, create: false)
       
       
-      let saveFile = documentDirectory.URLByAppendingPathComponent("boos.bin")
-      
-      
+      let saveFile = documentDirectory.URLByAppendingPathComponent("library.bin")
       // Save
-      //let libraryData = NSKeyedArchiver.archivedDataWithRootObject(library.books.first!)
-      // libraryData.writeToURL(saveFile, atomically: true)
+      let libraryData = NSKeyedArchiver.archivedDataWithRootObject(library)
+       libraryData.writeToURL(saveFile, atomically: true)
+        print(libraryData)
       
       // Restore
       
@@ -73,8 +74,6 @@ class ViewController: UIViewController {
       print(error)
     }
 
-    
-  
   }
 
   override func didReceiveMemoryWarning() {
